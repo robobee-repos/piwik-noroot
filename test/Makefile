@@ -1,5 +1,5 @@
-include ../Makefile.help
-include ../Makefile.functions
+include ../utils/Makefile.help
+include ../utils/Makefile.functions
 
 ROOT_DIR:=$(shell realpath root)
 NGINX_CONF_DIR:=$(shell realpath nginx-in)

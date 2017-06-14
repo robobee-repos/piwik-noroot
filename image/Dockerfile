@@ -1,6 +1,12 @@
 FROM  piwik:3.0.4-fpm
 LABEL maintainer "Erwin Mueller <erwin.mueller@deventm.com>"
 
+RUN set -x \
+  && DEBIAN_FRONTEND=noninteractive \
+  && apt-get update \
+  && apt-get install -y rsync \
+  && rm -rf /var/lib/apt/lists/*
+
 # Install docker-entrypoint.sh
 
 ADD rootfs/docker-entrypoint.sh /docker-entrypoint-in.sh

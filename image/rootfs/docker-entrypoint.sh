@@ -15,10 +15,19 @@ function copy_php() {
   copy_file php.ini /usr/local/etc/php/
 }
 
+function sync_piwik() {
+  cd $WEB_ROOT
+  rsync -v -rlD /usr/src/piwik/. .
+}
+
 if [ -d /php-in ]; then
   copy_php
 fi
 
+if [ -e "$WEB_ROOT/piwik.php" ]; then
+  sync_piwik
+fi
+
+cd "$WEB_ROOT"
 echo "Running as `id`"
-cd $WEB_ROOT
 exec bash -x -- /entrypoint-old.sh "$@"
