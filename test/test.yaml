@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  piwik:
+    image: erwin82/piwik:latest
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    volumes:
+      - ${ROOT_DIR}:/var/www/html
+
+  mysql:
+    image: bitnami/mysql:latest
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: "piwikdb"
+      MYSQL_PASSWORD: "test"
+      MYSQL_DATABASE: "piwikdb"
+
+  nginx:
+    image: erwin82/nginx:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - piwik
+    links:
+      - piwik
+    volumes:
+      - ${NGINX_CONF_DIR}:/nginx-in
+      - ${ROOT_DIR}:/var/www/html
