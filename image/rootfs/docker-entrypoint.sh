@@ -15,6 +15,11 @@ function copy_php() {
   copy_file php.ini /usr/local/etc/php/
 }
 
+function copy_php_confd() {
+  cd /php-confd-in
+  rsync /php-confd-in/. /usr/local/etc/php/conf.d/
+}
+
 function sync_piwik() {
   cd $WEB_ROOT
   rsync -v -rlD /usr/src/piwik/. .
@@ -22,6 +27,10 @@ function sync_piwik() {
 
 if [ -d /php-in ]; then
   copy_php
+fi
+
+if [ -d /php-confd-in ]; then
+  copy_php_confd
 fi
 
 if [ -e "$WEB_ROOT/piwik.php" ]; then
