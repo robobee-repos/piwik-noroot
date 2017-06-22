@@ -8,8 +8,13 @@ services:
       - mysql
     links:
       - mysql
+    environment:
+      PHP_MAX_EXECUTION_TIME: "600"
+      PHP_OPCACHE_MEMORY_CONSUMPTION_MB: 64
+      PHP_MEMORY_LIMIT_MB: 64
     volumes:
       - ${ROOT_DIR}:/var/www/html
+      - ${PWD}/phpinfo.php:/var/www/html/phpinfo.php
 
   mysql:
     image: bitnami/mysql:latest
@@ -23,8 +28,6 @@ services:
     image: erwin82/nginx:latest
     ports:
       - 8080:8080
-    depends_on:
-      - piwik
     links:
       - piwik
     volumes:
