@@ -1,5 +1,5 @@
- #!/bin/bash
- set -xe
+#!/bin/bash
+set -xe
  
 function check_files_exists() {
   ls "$1" 1> /dev/null 2>&1
@@ -54,3 +54,4 @@ sync_piwik
  
 cd "$WEB_ROOT"
 echo "Running as `id`"
+exec bash -x -- /entrypoint-old.sh "$@"
