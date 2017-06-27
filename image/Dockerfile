@@ -33,11 +33,11 @@ RUN set -x \
   && mkdir -p /php-in \
   && mkdir -p /php-fpm-in
 
-ADD rootfs/www.conf /usr/local/etc/php-fpm.d/99-www.conf
+ADD rootfs/www.conf /usr/local/etc/php-fpm.d/zz-www.conf
 
-ADD rootfs/opcache-recommended.ini /usr/local/etc/php-fpm.d/opcache-recommended.ini
+ADD rootfs/opcache-recommended.ini /usr/local/etc/php/conf.d/zz-opcache-recommended.ini
 
-ADD rootfs/conf.ini /usr/local/etc/php-fpm.d/99-conf.ini
+ADD rootfs/conf.ini /usr/local/etc/php/conf.d/zz-conf.ini
 
 # Web Root.
 
