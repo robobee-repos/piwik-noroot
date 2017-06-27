@@ -3,6 +3,7 @@ LABEL maintainer "Erwin Mueller <erwin.mueller@deventm.com>"
 
 ARG APT_CACHE
 ENV WEB_ROOT /var/www/html
+ENV WEB_USER www-data
 ENV PHP_MAX_EXECUTION_TIME 300
 ENV PHP_MEMORY_LIMIT_MB 128
 ENV PHP_FPM_MAX_CHILDREN 5
@@ -12,6 +13,7 @@ ENV PHP_FPM_MAX_SPARE_SERVERS 3
 ENV PHP_OPCACHE_ENABLE_CLI 0
 ENV PHP_OPCACHE_ENABLE 1
 ENV PHP_OPCACHE_MEMORY_CONSUMPTION_MB 128
+ENV PHP_OPCACHE_MAX_ACCELERATED_FILES 4000
 
 RUN set -x \
   # Optional add proxy entries for apt.
@@ -31,46 +33,21 @@ RUN set -x \
   && mkdir -p /php-in \
   && mkdir -p /php-fpm-in
 
-RUN { \
-    echo '[www]'; \
-    echo 'pm = dynamic'; \
-    echo 'pm.max_children = ${PHP_FPM_MAX_CHILDREN}'; \
-    echo 'pm.start_servers = ${PHP_FPM_START_SERVERS}'; \
-    echo 'pm.min_spare_servers = ${PHP_FPM_MIN_SPARE_SERVERS}'; \
-    echo 'pm.max_spare_servers = ${PHP_FPM_MAX_SPARE_SERVERS}'; \
-    echo 'pm.status_path = /phpstatus'; \
-    echo 'ping.path = /ping'; \
-    echo 'ping.response = pong'; \
-} > /usr/local/etc/php-fpm.d/99-www.conf
+ADD rootfs/www.conf /usr/local/etc/php-fpm.d/99-www.conf
 
-# set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-    echo 'opcache.memory_consumption=${PHP_OPCACHE_MEMORY_CONSUMPTION_MB}'; \
-    echo 'opcache.interned_strings_buffer=8'; \
-    echo 'opcache.max_accelerated_files=4000'; \
-    echo 'opcache.revalidate_freq=2'; \
-    echo 'opcache.fast_shutdown=1'; \
-    echo 'opcache.enable_cli=${PHP_OPCACHE_ENABLE_CLI}'; \
-    echo 'opcache.enable=${PHP_OPCACHE_ENABLE}'; \
-    echo 'opcache.revalidate_freq=60'; \
-} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+ADD rootfs/opcache-recommended.ini /usr/local/etc/php-fpm.d/opcache-recommended.ini
 
-RUN { \
-    echo 'max_execution_time=${PHP_MAX_EXECUTION_TIME}'; \
-    echo 'memory_limit=${PHP_MEMORY_LIMIT_MB}M'; \
-    echo 'realpath_cache_size = 1MB'; \
-} > /usr/local/etc/php/conf.d/99-conf.ini
+ADD rootfs/conf.ini /usr/local/etc/php-fpm.d/99-conf.ini
 
 # Web Root.
 
 RUN set -x \
   && chown www-data $WEB_ROOT
 
-# Install docker-entrypoint.sh
+# Finishing up.
 
 ADD rootfs/docker-entrypoint.sh /docker-entrypoint-in.sh
-
+ 
 RUN set -x \
   && chmod +x /docker-entrypoint-in.sh \
   && mv /entrypoint.sh /entrypoint-old.sh \
@@ -80,9 +57,9 @@ RUN set -x \
 
 # Finishing up.
 
-WORKDIR $WEB_ROOT
-
-USER www-data
+WORKDIR ${WEB_ROOT}
+ 
+USER ${WEB_USER}
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
