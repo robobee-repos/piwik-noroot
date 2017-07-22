@@ -6,10 +6,10 @@ function check_files_exists() {
 }
 
  function copy_file() {
-   file="$1"; shift
+  file="$1"; shift
   dir="$1"; shift
   mod="$1"; shift
-   if [ -e "$file" ]; then
+  if [ -e "$file" ]; then
     mkdir -p "$dir"
     cp "$file" "$dir/$file"
     chmod $mod "$dir/$file"
@@ -40,13 +40,13 @@ function copy_php_fpm_conf() {
   rsync -v "${dir}/*.conf" /usr/local/etc/php-fpm.d/
  }
  
- function sync_piwik() {
+function sync_piwik() {
   if [ ! -e "$WEB_ROOT/piwik.php" ]; then
     return
   fi
-   cd $WEB_ROOT
+  cd $WEB_ROOT
   rsync -rlD -u /usr/src/piwik/. .
- }
+}
  
 copy_php_conf
 copy_php_fpm_conf
