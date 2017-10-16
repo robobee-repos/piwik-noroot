@@ -1,6 +1,6 @@
 REPOSITORY := erwin82
-NAME := piwik-noroot
-VERSION ?= v3.0.4-fpm-5-1
+NAME := piwik
+VERSION ?= v3.2.0-fpm-r2-1
 
 build: _build ##@targets Builds the docker image.
 
