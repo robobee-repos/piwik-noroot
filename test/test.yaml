@@ -3,25 +3,24 @@ version: '3.1'
 services:
 
   piwik:
-    image: erwin82/piwik:latest
+    image: robobeerun/piwik:latest
     links:
       - mariadb:db
     environment:
-      PHP_MAX_EXECUTION_TIME: "600"
-      PHP_OPCACHE_MEMORY_CONSUMPTION_MB: 64
-      PHP_MEMORY_LIMIT_MB: 64
+      DEBUG: "true"
     volumes:
-      - ${ROOT_DIR}/html:/var/www/html
+      - "./root/html:/var/www/html"
+      - "./piwik-in:/piwik-in"
 
   mariadb:
     image: bitnami/mariadb:latest
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
       MARIADB_USER: "piwikdb"
-      MARIADB_PASSWORD: "te8Laitei5eoJiiceed0aebua7Choo1a"
+      MARIADB_PASSWORD: "piwikdb"
       MARIADB_DATABASE: "piwikdb"
     volumes:
-      - ${ROOT_DIR}/db:/bitnami/mariadb
+      - "./root/db:/bitnami/mariadb"
 
   nginx:
     image: erwin82/nginx:latest
@@ -30,5 +29,5 @@ services:
     links:
       - piwik
     volumes:
-      - ${NGINX_CONF_DIR}:/nginx-in
-      - ${ROOT_DIR}/html:/var/www/html
+      - "./nginx-in:/nginx-in"
+      - "./root/html:/var/www/html"

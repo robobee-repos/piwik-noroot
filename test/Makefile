@@ -2,31 +2,23 @@ include ../utils/Makefile.help
 include ../utils/Makefile.functions
 
 NAME := piwik
-ROOT_DIR:=$(shell realpath root)
-NGINX_CONF_DIR:=$(shell realpath nginx-in)
 
 test: setup ##@targets Starts docker compose.
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& export NGINX_CONF_DIR="$(NGINX_CONF_DIR)" \
-	&& docker-compose -p ${NAME} -f test.yaml up
+	docker-compose -p ${NAME} -f test.yaml up
 .PHONY: up
 
 rm:
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& export NGINX_CONF_DIR="$(NGINX_CONF_DIR)" \
-	&& docker-compose -p ${NAME} -f test.yaml stop
+	docker-compose -p ${NAME} -f test.yaml stop
 
 clean: rm
-	export ROOT_DIR="$(ROOT_DIR)" \
-	&& export NGINX_CONF_DIR="$(NGINX_CONF_DIR)" \
-	&& docker-compose -p ${NAME} -f test.yaml rm
-	sudo rm -rf $(ROOT_DIR)
+	docker-compose -p ${NAME} -f test.yaml rm -f
+	sudo rm -rf root
 
 setup:
-	mkdir -p $(ROOT_DIR)/html
-	mkdir -p $(ROOT_DIR)/db
-	chmod o+rwX $(ROOT_DIR)/html
-	chmod o+rwX $(ROOT_DIR)/db
+	mkdir -p root/html
+	mkdir -p root/db
+	chmod o+rwX root/html
+	chmod o+rwX root/db
 .PHONY: setup
 
 count-php-files:
