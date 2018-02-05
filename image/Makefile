@@ -1,6 +1,6 @@
 REPOSITORY := robobeerun
 NAME := piwik
-VERSION ?= v3.2.0-fpm-r3
+VERSION ?= v3.3.0-fpm-r1
 
 build: _build ##@targets Builds the docker image.
 

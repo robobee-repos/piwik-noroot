@@ -5,7 +5,7 @@ host = "db"
 username = "piwikdb"
 password = "piwikdb"
 dbname = "piwikdb"
-tables_prefix = "piwik_"
+tables_prefix = "matomo_"
 
 [General]
 session_save_handler = dbtable

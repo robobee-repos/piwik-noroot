@@ -1,4 +1,8 @@
 #!/bin/bash
+
+### Version 1.0
+### Contains various utilities functions for the docker-entrypoint.sh script.
+
 set -e
 
 BASH_CMD="bash"
@@ -19,18 +23,36 @@ function copy_file() {
   fi
 }
 
+function checkVariables() {
+  declare -a v=("${!1}")
+  for var in "${v[@]}"; do
+    if [ -n "${!var:-}" ]; then
+      echo "$var is set to: ${!var}"
+    else
+      echo "Need to set variable: $var"
+      exit 1
+    fi
+  done
+}
+
 function copy_files() {
+  if [[ $# -eq 4 ]]; then
+    declare -a skip=("${!4}")
+    skip="--exclude=${skip[@]}"
+  else
+    skip=""
+  fi
   dir="$1"; shift
   target="$1"; shift
   files="$1"; shift
-  if [ ! -d "${dir}" ]; then
+  if [[ ! -d "${dir}" ]]; then
     return
   fi
   cd "${dir}"
   if ! check_files_exists "$files"; then
     return
   fi
-  $RSYNC_CMD -Lv ${dir}/$files $target/
+  $RSYNC_CMD ${skip} -Lv ${dir}/$files $target/
 }
 
 function sync_dir() {

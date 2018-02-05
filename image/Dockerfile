@@ -1,5 +1,5 @@
-FROM  piwik:3.2.0-fpm
-LABEL maintainer "Erwin Mueller <erwin.mueller@deventm.com>"
+FROM  piwik:3.3.0-fpm
+LABEL maintainer "Erwin Mueller <erwin@muellerpublic.de>"
 
 ARG APT_CACHE
 
@@ -17,21 +17,16 @@ RUN set -x \
   && apt-get install -y rsync \
   && rm -rf /var/lib/apt/lists/*
 
-RUN set -x \
-  && pecl install redis \
-  && docker-php-ext-enable redis
-
 ENV WEB_ROOT="/var/www/html" \
   WEB_USER="www-data"
 
 RUN set -x \
+  && mkdir -p ${WEB_ROOT} \
   && chown ${WEB_USER}.${WEB_USER} $WEB_ROOT
 
 # Php configuration.
 
 ENV DEBUG="false" \
-  WEB_ROOT="/var/www/html" \
-  WEB_USER="www-data" \
   PHP_MAX_EXECUTION_TIME="300" \
   PHP_MEMORY_LIMIT="128M" \
   PHP_FPM_MAX_CHILDREN="10" \
